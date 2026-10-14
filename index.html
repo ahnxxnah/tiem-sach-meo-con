@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff6df">
+  <meta name="description" content="Tiệm Sách Mèo Con - trò chơi bán sách, tính tiền và học toán cộng trừ nhân chia cho trẻ em.">
+  <title>Tiệm Sách Mèo Con · Game học toán</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="brand" role="banner"><span class="brand-mark" aria-hidden="true">🐱</span><div><div class="brand-name">TIỆM SÁCH <em>MÈO CON</em></div><div class="brand-sub">Học toán qua mỗi lần bán hàng ✦</div></div></div>
+      <div class="header-actions"><span id="shop-status" class="status-pill">● Đang đóng cửa</span><button id="sound-btn" type="button" class="icon-btn" title="Bật hoặc tắt âm thanh" aria-label="Bật hoặc tắt âm thanh">🔊</button></div>
+    </header>
+
+    <div class="dash-grid">
+      <div class="stat stat-cream"><span class="stat-icon">☀️</span><div><small>Ngày chơi</small><strong id="stat-day">1</strong></div></div>
+      <div class="stat stat-green"><span class="stat-icon">🪙</span><div><small>Quỹ tiệm</small><strong id="stat-wallet">0đ</strong></div></div>
+      <div class="stat stat-pink"><span class="stat-icon">🛍️</span><div><small>Khách đã phục vụ</small><strong id="stat-served">0</strong></div></div>
+      <div class="stat stat-purple"><span class="stat-icon">⭐</span><div><small>Sao chăm chỉ</small><strong id="stat-stars">0</strong></div></div>
+    </div>
+
+    <nav class="tab-bar" aria-label="Các khu vực trong game">
+      <button class="tab is-active" data-nav="shop" type="button"><span>🏠</span> Cửa tiệm</button>
+      <button class="tab" data-nav="checkout" type="button"><span>🧾</span> Quầy thu ngân</button>
+      <button class="tab" data-nav="stock" type="button"><span>📦</span> Nhập hàng</button>
+      <button class="tab" data-nav="rewards" type="button"><span>🏅</span> Thành tích</button>
+    </nav>
+
+    <main>
+      <section class="screen is-active" id="screen-shop" aria-label="Cửa tiệm">
+        <div class="shop-layout">
+          <div class="store-scene panel">
+            <div class="sky-bunting" aria-hidden="true">✿　✧　☁️　✧　✿</div>
+            <div class="store-front">
+              <div class="store-awning" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="store-sign"><span>📚</span> Tiệm sách Mèo Con <span>📚</span></div>
+              <div class="store-windows"><div class="book-window"><i>📕</i><i>📗</i><i>📘</i><i>📙</i></div><div class="store-door">🚪<span id="door-plate">CLOSED</span></div><div class="book-window"><i>🖍️</i><i>📒</i><i>✏️</i><i>🧸</i></div></div>
+            </div>
+            <div class="scene-ground"><span class="scene-cat">🐈</span><span class="scene-flower">🌼 🌿 🌷</span></div>
+            <div class="scene-bottom"><span class="scene-caption">Một cửa tiệm nhỏ, thật nhiều điều hay!</span><button id="open-close-btn" class="btn btn-primary btn-large" type="button">🔓 Mở cửa hàng</button></div>
+          </div>
+          <div class="welcome-col">
+            <div class="panel welcome-card"><span class="eyebrow">✨ MỖI NGÀY MỘT CHÚT TIẾN BỘ</span><h1>Xin chào,<br><span>chủ tiệm nhí!</span></h1><p>Nhập sách vào kho, mở cửa đón khách, tính tiền thật khéo và đổi lấy những ngôi sao chăm chỉ nhé!</p><div class="welcome-actions"><button type="button" id="go-checkout-btn" class="btn btn-dark">🧾 Đến quầy tính tiền <span>→</span></button><button type="button" id="go-stock-btn" class="btn btn-quiet">📦 Xem kho sách</button></div></div>
+            <div class="panel tip-panel"><span>💡</span><div><strong>Mẹo của Mèo Con</strong><p>Trả tiền thừa bằng các tờ tiền mèo. Nếu bài toán khó, mở <b>Giấy nháp</b> để viết tay hoặc đặt tính dọc nhé!</p></div></div>
+          </div>
+        </div>
+        <div class="section-title"><div><span class="eyebrow">CHỌN CHỦ ĐỀ BÀI TOÁN</span><h2>Ba cấp độ luyện toán</h2></div><span class="small-pill">Theo định hướng Toán tiểu học</span></div>
+        <div class="level-grid" id="level-cards">
+          <button class="level-card level-easy is-selected" data-level="easy" type="button"><div class="level-symbol">🌱</div><span class="level-tag">CẤP 1</span><h3>Dễ · Bé khởi động</h3><p>Cộng và trừ, giá tiền đơn giản, số nhỏ.</p><div class="chips"><span>+</span><span>−</span></div><span class="level-footer">Chọn cấp độ <b>↗</b></span></button>
+          <button class="level-card level-medium" data-level="medium" type="button"><div class="level-symbol">🌻</div><span class="level-tag">CẤP 2</span><h3>Vừa · Bé tính giỏi</h3><p>Cộng, trừ, nhân; nhiều món và số lượng.</p><div class="chips"><span>+</span><span>−</span><span>×</span></div><span class="level-footer">Chọn cấp độ <b>↗</b></span></button>
+          <button class="level-card level-hard" data-level="hard" type="button"><div class="level-symbol">🚀</div><span class="level-tag">CẤP 3</span><h3>Khó · Chủ tiệm tài ba</h3><p>Cộng, trừ, nhân, chia và hóa đơn lớn hơn.</p><div class="chips"><span>+</span><span>−</span><span>×</span><span>÷</span></div><span class="level-footer">Chọn cấp độ <b>↗</b></span></button>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-checkout" aria-label="Quầy tính tiền">
+        <div class="section-title checkout-head"><div><span class="eyebrow">KHU VỰC BÁN HÀNG</span><h2>🧾 Quầy thu ngân</h2></div><div class="head-actions"><span id="current-level-tag" class="small-pill">🌱 Cấp dễ</span><button type="button" class="btn btn-quiet" id="open-scratch-top">✏️ Giấy nháp</button></div></div>
+        <div id="closed-counter" class="counter-empty panel"><div class="empty-illustration">🛎️</div><h3>Cửa tiệm đang đóng!</h3><p>Hãy mở cửa ở trang Cửa tiệm trước khi phục vụ khách.</p><button id="counter-open-btn" class="btn btn-primary" type="button">🔓 Mở cửa tiệm</button></div>
+        <div id="no-customer" class="counter-empty panel hidden"><div class="empty-illustration">🐱📚</div><h3>Quầy thu ngân đã sẵn sàng!</h3><p>Chuông cửa sắp reo. Em đã sẵn sàng tính tiền chưa?</p><button id="call-customer-btn" class="btn btn-primary btn-large" type="button">🔔 Mời khách vào tiệm</button></div>
+        <div id="active-order" class="cashier-layout hidden">
+          <div class="cashier-left">
+            <div class="customer-card panel"><span class="eyebrow">KHÁCH HÀNG HÔM NAY</span><div class="customer-row"><div class="avatar" id="customer-avatar">👧</div><div><h3 id="customer-name">Bạn Na</h3><p id="customer-speech">Chào bạn, mình muốn mua ít đồ!</p></div></div><div class="customer-progress"><span class="step-dot" id="step-question">1 · Tính toán</span><span class="step-line"></span><span class="step-dot" id="step-payment">2 · Thối tiền</span></div></div>
+            <div class="receipt-card panel"><div class="receipt-heading"><div><span class="eyebrow">HÓA ĐƠN</span><h3>Giỏ đồ của khách</h3></div><span>🛒</span></div><div class="receipt-items" id="receipt-items"></div><div class="receipt-total"><span>TỔNG CỘNG</span><strong id="receipt-total">0đ</strong></div><small>Giá trong bài được tính bằng nghìn đồng (1 = 1.000đ).</small></div>
+          </div>
+          <div class="cashier-right">
+            <div id="quiz-panel" class="challenge panel"><div class="challenge-top"><span class="eyebrow">🧠 THỬ THÁCH TOÁN HỌC</span><span id="challenge-operation" class="op-pill">CỘNG</span></div><h3 id="quiz-title">Tính giúp Mèo Con nhé!</h3><p class="quiz-prompt" id="quiz-prompt"></p><label for="quiz-answer" class="field-label">Đáp án của em (nghìn đồng, hoặc số lượng theo đề)</label><div class="answer-box"><input inputmode="numeric" autocomplete="off" pattern="[0-9]*" id="quiz-answer" type="number" min="0" placeholder="Nhập kết quả..."><span class="answer-suffix" id="quiz-suffix">nghìn</span></div><div class="response-message" id="quiz-feedback" role="status" aria-live="polite"></div><div class="challenge-actions"><button id="check-answer-btn" class="btn btn-dark" type="button">✓ Kiểm tra đáp án</button><button id="open-scratch-quiz" class="btn btn-quiet" type="button">✏️ Giấy nháp</button></div></div>
+            <div id="payment-panel" class="payment panel hidden"><div class="challenge-top"><span class="eyebrow">💵 THANH TOÁN BẰNG TIỀN MÈO</span><span class="op-pill">THỐI TIỀN</span></div><h3>Bé hãy trả lại tiền thừa!</h3><p>Khách đưa tờ tiền dưới đây. Hãy chọn các tờ tiền mèo để trả lại đúng số tiền thừa.</p><div id="customer-note" class="incoming-note"></div><div class="payment-equation"><div><small>Khách đưa</small><strong id="paid-amount"></strong></div><b>−</b><div><small>Tiền mua hàng</small><strong id="bill-amount"></strong></div><b>=</b><div><small>Tiền cần trả lại</small><strong>?</strong></div></div><div class="cash-label"><b>Ví tiền mèo của em</b><small>Chạm từng tờ để thêm vào khay</small></div><div id="banknote-grid" class="banknote-grid"></div><div class="change-tray"><div><small>Em đang trả lại</small><strong id="change-sum">0đ</strong></div><div id="selected-notes" class="selected-notes">Chưa chọn tờ tiền nào</div></div><div class="payment-actions"><button type="button" class="btn btn-dark" id="check-change-btn">✓ Giao tiền cho khách</button><button type="button" class="btn btn-quiet" id="undo-note-btn">↶ Bỏ tờ cuối</button><button type="button" class="btn btn-quiet" id="reset-notes-btn">Xóa hết</button><button type="button" class="btn btn-quiet" id="open-scratch-pay">✏️ Giấy nháp</button></div><div class="response-message" id="payment-feedback" role="status" aria-live="polite"></div></div>
+            <div id="success-panel" class="success-card panel hidden"><div class="success-emoji">🎊 🐱 🎉</div><h3>Giỏi quá, chủ tiệm nhí ơi!</h3><p id="success-text"></p><div class="reward-stars">⭐ +10 sao chăm chỉ!</div><button id="next-customer-btn" class="btn btn-primary btn-large" type="button">🔔 Đón khách tiếp theo →</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-stock" aria-label="Kho và nhập hàng"><div class="section-title"><div><span class="eyebrow">CHUẨN BỊ KINH DOANH</span><h2>📦 Kho sách & nhập hàng</h2></div><span class="small-pill">Nhập giá, nhập số lượng, bổ sung hàng</span></div><div class="stock-layout"><div class="stock-main"><div class="stock-toolbar"><p>Hãy nhập hàng để khách có nhiều lựa chọn. Mỗi mặt hàng có <b>giá bán</b> và <b>giá nhập</b> riêng.</p><div class="filter-row" id="filter-row"><button class="filter is-selected" data-filter="Tất cả" type="button">Tất cả</button><button class="filter" data-filter="Sách" type="button">📚 Sách</button><button class="filter" data-filter="Vở" type="button">📓 Vở</button><button class="filter" data-filter="Bút" type="button">✏️ Bút</button><button class="filter" data-filter="Dụng cụ" type="button">✂️ Dụng cụ</button><button class="filter" data-filter="Quà tặng" type="button">🎁 Quà tặng</button></div></div><div class="inventory-grid" id="inventory-grid"></div></div><aside class="panel add-item"><span class="eyebrow">🪄 TÙY CHỈNH CỬA TIỆM</span><h3>Thêm mặt hàng mới</h3><p>Em có thể tự nghĩ ra đồ dùng muốn bán!</p><form id="add-item-form"><label>Tên mặt hàng<input type="text" maxlength="36" required name="name" placeholder="Ví dụ: Truyện cổ tích"></label><div class="form-double"><label>Hình sản phẩm<select name="emoji"><option>📕</option><option>📚</option><option>📗</option><option>📘</option><option>📙</option><option>📒</option><option>📓</option><option>✏️</option><option>🖊️</option><option>🖍️</option><option>📏</option><option>🧸</option><option>🎨</option><option>🎁</option></select></label><label>Loại<select name="category"><option>Sách</option><option>Vở</option><option>Bút</option><option>Dụng cụ</option><option>Quà tặng</option></select></label></div><div class="form-double"><label>Giá bán (nghìn)<input name="price" type="number" min="1" max="200" required value="15"></label><label>Giá nhập (nghìn)<input name="cost" type="number" min="1" max="199" required value="8"></label></div><label>Số lượng nhập lần đầu<input name="quantity" type="number" min="0" max="99" required value="5"></label><button type="submit" class="btn btn-dark btn-block">＋ Thêm vào kho</button></form><p class="aside-tip">🐾 Giá nhập hàng sẽ được trừ vào quỹ tiệm. Hết tiền? Hãy bán thêm sách!</p></aside></div></section>
+
+      <section class="screen" id="screen-rewards" aria-label="Thành tích"><div class="section-title"><div><span class="eyebrow">GÓC KHEN THƯỞNG</span><h2>🏅 Nhật ký chủ tiệm</h2></div></div><div class="reward-summary panel"><span class="reward-mascot">🏆</span><div><h3>Mỗi phép tính đúng là một bước tiến!</h3><p>Tiến trình được lưu trên trình duyệt của thiết bị này. Cứ luyện tập mỗi ngày nhé.</p></div></div><div class="achievement-grid" id="achievement-grid"></div><div class="panel daily-overview"><h3>📊 Nhật ký bán hàng</h3><div id="day-summary" class="day-summary"></div><button type="button" id="reset-game-btn" class="btn btn-danger-quiet">↺ Bắt đầu lại từ ngày đầu (xóa tiến trình)</button></div></section>
+    </main>
+    <footer>🐈 Tiệm Sách Mèo Con · Game mô phỏng dành cho trẻ · Tiền mèo chỉ dùng trong trò chơi · Lấy cảm hứng từ nội dung toán tiểu học Kết nối tri thức, không phải tài liệu chính thức của nhà xuất bản.</footer>
+  </div>
+
+  <div class="modal-backdrop hidden" id="scratch-modal" role="dialog" aria-modal="true" aria-labelledby="scratch-title"><div class="scratch-dialog"><div class="scratch-header"><div><span class="eyebrow">✏️ GÓC HỌC TẬP</span><h2 id="scratch-title">Giấy nháp của bé</h2></div><button id="close-scratch" type="button" class="icon-btn" aria-label="Đóng giấy nháp">✕</button></div><div class="scratch-tabs"><button data-scratch="draw" class="scratch-tab is-active" type="button">🖊️ Viết tay</button><button data-scratch="column" class="scratch-tab" type="button">🔢 Đặt tính cột dọc</button></div><div id="scratch-draw" class="scratch-content"><p>Dùng ngón tay, bút cảm ứng hoặc chuột để viết phép tính.</p><canvas id="drawing-canvas" aria-label="Vùng giấy nháp viết tay"></canvas><div class="scratch-tools"><button type="button" id="undo-stroke" class="btn btn-quiet">↶ Nét trước</button><button type="button" id="clear-canvas" class="btn btn-quiet">🧹 Xóa giấy</button></div></div><div id="scratch-column" class="scratch-content hidden"><p>Em tự điền các chữ số và đặt tính theo cột dọc. Phần này không tự làm bài hộ bé.</p><div class="column-controls"><label>Số thứ nhất<input id="col-first" type="number" min="0" value="46"></label><label>Phép tính<select id="col-operation"><option value="+">+</option><option value="-">−</option><option value="*">×</option><option value="/">÷</option></select></label><label>Số thứ hai<input id="col-second" type="number" min="1" value="27"></label></div><div class="column-sheet"><div id="column-visual" class="column-visual"></div><div class="column-check"><button id="col-check-btn" class="btn btn-quiet" type="button">✓ Kiểm tra phép đặt tính</button><span id="column-result" role="status" aria-live="polite"></span></div></div><div class="scratch-tools"><button type="button" class="btn btn-quiet" id="load-quiz-numbers">↙ Lấy số từ bài toán</button></div></div><p class="scratch-foot">✨ Giấy nháp là nơi bé thử cách giải. Kết quả cuối cùng cần nhập ở quầy thu ngân.</p></div></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
