@@ -41,6 +41,8 @@
               <div class="store-windows"><div class="book-window"><i>📕</i><i>📗</i><i>📘</i><i>📙</i></div><div class="store-door">🚪<span id="door-plate">CLOSED</span></div><div class="book-window"><i>🖍️</i><i>📒</i><i>✏️</i><i>🧸</i></div></div>
             </div>
             <div class="scene-ground"><span class="scene-cat">🐈</span><span class="scene-flower">🌼 🌿 🌷</span></div>
+            <div class="outside-walker outside-walker-one" aria-hidden="true">👧</div>
+            <div class="outside-walker outside-walker-two" aria-hidden="true">🐰</div>
             <div class="scene-bottom"><span class="scene-caption">Một cửa tiệm nhỏ, thật nhiều điều hay!</span><button id="open-close-btn" class="btn btn-primary btn-large" type="button">🔓 Mở cửa hàng</button></div>
           </div>
           <div class="welcome-col">
@@ -61,6 +63,20 @@
         <div id="closed-counter" class="counter-empty panel"><div class="empty-illustration">🛎️</div><h3>Cửa tiệm đang đóng!</h3><p>Hãy mở cửa ở trang Cửa tiệm trước khi phục vụ khách.</p><button id="counter-open-btn" class="btn btn-primary" type="button">🔓 Mở cửa tiệm</button></div>
         <div id="no-customer" class="counter-empty panel hidden"><div class="empty-illustration">🐱📚</div><h3>Quầy thu ngân đã sẵn sàng!</h3><p>Chuông cửa sắp reo. Em đã sẵn sàng tính tiền chưa?</p><button id="call-customer-btn" class="btn btn-primary btn-large" type="button">🔔 Mời khách vào tiệm</button></div>
         <div id="active-order" class="cashier-layout hidden">
+          <!-- Cảnh khách hàng đi từ cửa đến kệ sách và quầy thanh toán -->
+          <div class="customer-walkway panel" aria-label="Cảnh khách di chuyển">
+            <div class="walkway-top"><strong>🐾 Khách hàng đang mua sắm</strong><span id="walk-status" role="status" aria-live="polite">Sắp đón khách</span></div>
+            <div class="walkway-scene">
+              <div class="walkway-path" aria-hidden="true"></div>
+              <div class="walkway-stop walkway-door" aria-hidden="true"><span>🚪</span><small>Cửa tiệm</small></div>
+              <div class="walkway-stop walkway-shelf" aria-hidden="true"><span>📚</span><small>Kệ sách</small></div>
+              <div class="walkway-stop walkway-cashier" aria-hidden="true"><span>🧾</span><small>Quầy thu ngân</small></div>
+              <div id="walking-customer" class="walking-customer" style="left:11%">
+                <span class="walking-face" id="walking-face">👧</span>
+                <span class="walking-name" id="walking-name">Khách hàng</span>
+              </div>
+            </div>
+          </div>
           <div class="cashier-left">
             <div class="customer-card panel"><span class="eyebrow">KHÁCH HÀNG HÔM NAY</span><div class="customer-row"><div class="avatar" id="customer-avatar">👧</div><div><h3 id="customer-name">Bạn Na</h3><p id="customer-speech">Chào bạn, mình muốn mua ít đồ!</p></div></div><div class="customer-progress"><span class="step-dot" id="step-question">1 · Tính toán</span><span class="step-line"></span><span class="step-dot" id="step-payment">2 · Thối tiền</span></div></div>
             <div class="receipt-card panel"><div class="receipt-heading"><div><span class="eyebrow">HÓA ĐƠN</span><h3>Giỏ đồ của khách</h3></div><span>🛒</span></div><div class="receipt-items" id="receipt-items"></div><div class="receipt-total"><span>TỔNG CỘNG</span><strong id="receipt-total">0đ</strong></div><small>Giá trong bài được tính bằng nghìn đồng (1 = 1.000đ).</small></div>

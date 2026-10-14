@@ -65,6 +65,7 @@ function sound(kind='click'){
 }
 function nav(to){screen=to;document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('is-active',el.dataset.nav===to));document.querySelectorAll('.screen').forEach(el=>el.classList.toggle('is-active',el.id==='screen-'+to));if(to==='checkout')renderCounter();if(to==='stock')renderInventory();if(to==='rewards')renderRewards();window.scrollTo({top:0,behavior:'smooth'});}
 function redraw(){
+  document.body.classList.toggle('shop-is-open',state.open);
   $('shop-status').textContent=state.open?'● Đang mở cửa':'● Đang đóng cửa';$('shop-status').classList.toggle('open',state.open);
   $('stat-day').textContent=state.day;$('stat-wallet').textContent=fmt(state.balance);$('stat-served').textContent=state.served;$('stat-stars').textContent=state.stars;
   $('open-close-btn').textContent=state.open?'🔒 Đóng cửa · Kết thúc ngày':'🔓 Mở cửa hàng';
@@ -77,7 +78,7 @@ function redraw(){
 function toggleStore(){
   if(state.open){
     if(state.order&&state.order.stage!=='success'&&!confirm('Đang có khách chờ tính tiền. Đóng cửa sẽ hủy hóa đơn này. Em có chắc không?'))return;
-    state.open=false;state.order=null;const revenue=fmt(state.salesToday);state.day++;state.salesToday=0;toast(`🌙 Đóng cửa rồi! Hôm nay bán được ${revenue}. Hẹn ngày mai!`);
+    stopCustomerWalk();state.open=false;state.order=null;const revenue=fmt(state.salesToday);state.day++;state.salesToday=0;toast(`🌙 Đóng cửa rồi! Hôm nay bán được ${revenue}. Hẹn ngày mai!`);
   }else{
     if(!state.items.some(item=>item.stock>0)){toast('📦 Kho trống! Nhập thêm sách rồi hãy mở cửa.');nav('stock');return;}
     state.open=true;toast('🎉 Tiệm đã mở cửa! Mời khách đến mua sách nào!');
@@ -87,7 +88,7 @@ function toggleStore(){
 function changeLevel(level){
   if(!LEVELS[level]||state.level===level)return;
   if(state.order&&state.order.stage!=='success'&&!confirm('Đổi cấp độ sẽ hủy hóa đơn hiện tại. Em có muốn đổi?'))return;
-  state.level=level;state.order=null;redraw();renderCounter();sound();toast(`Đã chọn cấp ${LEVELS[level].name}. Chúc em học giỏi!`);
+  stopCustomerWalk();state.level=level;state.order=null;redraw();renderCounter();sound();toast(`Đã chọn cấp ${LEVELS[level].name}. Chúc em học giỏi!`);
 }
 function tenderFor(total,level){
   const acceptable=DENOMS.filter(n=>n>=total&&(level!=='easy'||n<=100));
@@ -146,6 +147,68 @@ function makeQuiz(order){
   }
   return q;
 }
+/* Khách di chuyển trên đường từ cửa -> kệ sách -> thu ngân -> ra về.
+   Mọi hẹn giờ đều gắn với hóa đơn hiện tại, tránh chuyển động nhầm khách. */
+let customerWalkTimers=[];
+function stopCustomerWalk(){
+  customerWalkTimers.forEach(clearTimeout);
+  customerWalkTimers=[];
+  const sprite=$('walking-customer');
+  if(sprite)sprite.classList.remove('is-walking','is-celebrating');
+  if($('check-answer-btn'))$('check-answer-btn').disabled=false;
+  if($('quiz-answer'))$('quiz-answer').disabled=false;
+}
+function afterWalk(order,ms,fn){
+  const timer=setTimeout(()=>{
+    if(state.order===order&&state.open)fn();
+  },ms);
+  customerWalkTimers.push(timer);
+}
+function startCustomerWalk(){
+  const order=state.order;if(!order)return;
+  stopCustomerWalk();
+  const sprite=$('walking-customer');
+  sprite.style.transition='none';sprite.style.left='11%';sprite.style.opacity='1';
+  sprite.classList.add('is-walking');
+  $('walking-face').textContent=order.customer.emoji;
+  $('walking-name').textContent=order.customer.name;
+  $('walk-status').textContent='🚪 Khách vừa bước vào!';
+  $('check-answer-btn').disabled=true;
+  $('quiz-answer').disabled=true;
+  // Cho trình duyệt vẽ vị trí ban đầu trước khi bắt đầu đi.
+  afterWalk(order,80,()=>{
+    sprite.style.transition='left 1.1s ease-in-out, opacity .4s ease';
+    sprite.style.left='50%';
+    $('walk-status').textContent='📚 Khách đang chọn sách...';
+  });
+  afterWalk(order,1550,()=>{
+    $('walk-status').textContent='🛒 Khách mang sách ra quầy...';
+    sprite.style.left='89%';
+  });
+  afterWalk(order,2800,()=>{
+    sprite.classList.remove('is-walking');
+    $('walk-status').textContent='🧮 Đã tới quầy, bé hãy tính tiền!';
+    $('check-answer-btn').disabled=false;
+    $('quiz-answer').disabled=false;
+  });
+}
+function startCustomerExit(){
+  const order=state.order;if(!order)return;
+  stopCustomerWalk();
+  const sprite=$('walking-customer');
+  sprite.classList.add('is-celebrating');
+  $('walk-status').textContent='🎉 Thanh toán thành công!';
+  afterWalk(order,800,()=>{
+    sprite.classList.remove('is-celebrating');sprite.classList.add('is-walking');
+    $('walk-status').textContent='👋 Khách đang rời tiệm...';
+    sprite.style.left='50%';
+  });
+  afterWalk(order,2050,()=>{sprite.style.left='11%';});
+  afterWalk(order,3250,()=>{
+    sprite.classList.remove('is-walking');sprite.style.opacity='0';
+    $('walk-status').textContent='✅ Hẹn gặp lại! Mời khách tiếp theo.';
+  });
+}
 function callCustomer(){
   if(!state.open){nav('shop');toast('Hãy mở cửa tiệm trước nhé!');return;}
   if(state.order&&state.order.stage!=='success')return;
@@ -157,6 +220,7 @@ function callCustomer(){
   sound();redraw();nav('checkout');
   $('quiz-answer').value='';$('quiz-feedback').textContent='';$('quiz-feedback').className='response-message';
   $('payment-feedback').textContent='';$('payment-feedback').className='response-message';
+  startCustomerWalk();
 }
 function renderCounter(){
   const order=state.order;
@@ -180,7 +244,7 @@ function checkAnswer(){
   const raw=$('quiz-answer').value.trim();if(raw===''){setFeedback('quiz-feedback','Nhập kết quả trước khi kiểm tra nhé!','error');return;}
   const answer=Number(raw);
   if(!Number.isInteger(answer)||answer<0){setFeedback('quiz-feedback','Hãy nhập một số tự nhiên nhé!','error');return;}
-  if(answer===order.quiz.answer){order.stage='payment';sound('good');toast('🌟 Chính xác! Bây giờ đến phần thối tiền.');renderCounter();}
+  if(answer===order.quiz.answer){order.stage='payment';$('walk-status').textContent='💵 Khách đang chờ nhận tiền thừa.';sound('good');toast('🌟 Chính xác! Bây giờ đến phần thối tiền.');renderCounter();}
   else{order.wrong++;state.streak=0;setFeedback('quiz-feedback','Chưa đúng rồi. Em thử tính lại hoặc mở giấy nháp nhé! 💪','error');sound('bad');redraw();}
 }
 function setFeedback(id,message,type){const el=$(id);el.textContent=message;el.className='response-message '+(type||'');}
@@ -207,7 +271,7 @@ function checkChange(){
   for(const line of o.items){const item=state.items.find(x=>x.id===line.id);if(item)item.stock=Math.max(0,item.stock-line.qty);}
   state.balance+=o.total;state.salesToday+=o.total;state.totalSales+=o.total;state.served++;state.stars+=10;state.streak++;state.bestStreak=Math.max(state.bestStreak,state.streak);
   o.stage='success';$('success-text').textContent=`${o.customer.name} mua hết ${fmt(o.total)}. Bé đã trả đúng ${fmt(o.change)} và thêm một lượt bán thành công!`;
-  sound('good');redraw();renderCounter();toast('🏅 +10 sao! Bé thối tiền đúng rồi!');
+  sound('good');redraw();renderCounter();startCustomerExit();toast('🏅 +10 sao! Bé thối tiền đúng rồi!');
 }
 function renderInventory(){
   document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('is-selected',x.dataset.filter===currentFilter));
@@ -293,7 +357,7 @@ function checkColumn(){
     el.textContent=Number(raw)===expected?'✓ Đặt tính đúng rồi!':'Chưa đúng, kiểm tra lại từng cột nhé.';
   }
 }
-function handleReset(){if(!confirm('Bạn có chắc muốn xóa quỹ, kho hàng và toàn bộ tiến trình? Hành động này không hoàn tác được.'))return;state=freshState();currentFilter='Tất cả';redraw();renderRewards();renderInventory();nav('shop');toast('Đã tạo một cửa tiệm mới từ ngày đầu tiên.');}
+function handleReset(){if(!confirm('Bạn có chắc muốn xóa quỹ, kho hàng và toàn bộ tiến trình? Hành động này không hoàn tác được.'))return;stopCustomerWalk();state=freshState();currentFilter='Tất cả';redraw();renderRewards();renderInventory();nav('shop');toast('Đã tạo một cửa tiệm mới từ ngày đầu tiên.');}
 /* Kết nối toàn bộ nút điều khiển, không cần thư viện bên ngoài. */
 document.querySelectorAll('[data-nav]').forEach(btn=>btn.addEventListener('click',()=>nav(btn.dataset.nav)));
 document.querySelectorAll('[data-level]').forEach(btn=>btn.addEventListener('click',()=>changeLevel(btn.dataset.level)));
